@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carl Liu — Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <svg class="svg-defs" width="0" height="0" aria-hidden="true">
+    <!-- v01–v03: gooey only (blur + alpha threshold fuses nearby letters) -->
+    <filter id="goo-plain" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+      <feGaussianBlur class="goo-blur" in="SourceGraphic" stdDeviation="0" />
+      <feColorMatrix mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 24 -10" result="blobs" />
+      <!-- Keep the letters' own colors crisp; only the bridges between them stay blurred -->
+      <feComposite in="SourceGraphic" in2="blobs" operator="atop" result="shape" />
+    </filter>
+
+    <!-- v04: lit glass — specular shine + blue rim -->
+    <filter id="goo-glass" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+      <feGaussianBlur class="goo-blur" in="SourceGraphic" stdDeviation="0" />
+      <feColorMatrix mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 24 -10" result="blobs" />
+      <!-- Keep the letters' own colors crisp; only the bridges between them stay blurred -->
+      <feComposite in="SourceGraphic" in2="blobs" operator="atop" result="shape" />
+      <feGaussianBlur id="glass-bump" in="shape" stdDeviation="6" result="bump" />
+      <feSpecularLighting in="bump" surfaceScale="5" specularConstant="1" specularExponent="25" lighting-color="#fff" result="light">
+        <feDistantLight azimuth="225" elevation="45" />
+      </feSpecularLighting>
+      <feComposite in="light" in2="shape" operator="in" result="shine" />
+      <feMorphology id="glass-rim" in="shape" operator="erode" radius="3" result="inner" />
+      <feComposite in="shape" in2="inner" operator="out" result="rim" />
+      <feFlood flood-color="#3507b5" flood-opacity="0.7" />
+      <feComposite in2="rim" operator="in" result="edge" />
+      <feMerge>
+        <feMergeNode in="edge" />
+        <feMergeNode in="shine" />
+      </feMerge>
+      <feComponentTransfer result="extra">
+        <feFuncA class="goo-fade" type="linear" slope="0" />
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode in="shape" />
+        <feMergeNode in="extra" />
+      </feMerge>
+    </filter>
+
+    <!-- v05: frosted — white grain + white rim -->
+    <filter id="goo-frost" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+      <feGaussianBlur class="goo-blur" in="SourceGraphic" stdDeviation="0" />
+      <feColorMatrix mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 24 -10" result="blobs" />
+      <!-- Keep the letters' own colors crisp; only the bridges between them stay blurred -->
+      <feComposite in="SourceGraphic" in2="blobs" operator="atop" result="shape" />
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" />
+      <feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0.4 0 0 0 -0.2" />
+      <feComposite in2="shape" operator="in" result="grain" />
+      <feMorphology in="shape" operator="erode" radius="2" result="inner" />
+      <feComposite in="shape" in2="inner" operator="out" />
+      <feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.8 0" />
+      <feMerge>
+        <feMergeNode in="grain" />
+        <feMergeNode />
+      </feMerge>
+      <feComponentTransfer result="extra">
+        <feFuncA class="goo-fade" type="linear" slope="0" />
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode in="shape" />
+        <feMergeNode in="extra" />
+      </feMerge>
+    </filter>
+
+    <!-- v06 (final): layered contour glass -->
+    <filter id="goo-contour" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+      <feGaussianBlur class="goo-blur" in="SourceGraphic" stdDeviation="0" />
+      <feColorMatrix mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 24 -10" result="blobs" />
+      <!-- Keep the letters' own colors crisp; only the bridges between them stay blurred -->
+      <feComposite in="SourceGraphic" in2="blobs" operator="atop" result="shape" />
+      <!-- Contour glass: blur the shape into a height field, warp it, map heights to color bands -->
+      <feGaussianBlur id="contour-blur" in="shape" stdDeviation="14" result="height" />
+      <feTurbulence type="fractalNoise" baseFrequency="0.006" numOctaves="2" seed="3" result="warp">
+        <animate attributeName="baseFrequency" values="0.006;0.009;0.006" dur="10s" repeatCount="indefinite" />
+      </feTurbulence>
+      <feDisplacementMap id="contour-warp" in="height" in2="warp" scale="40" xChannelSelector="R" yChannelSelector="G" />
+      <feColorMatrix values="0 0 0 1.7 -0.7  0 0 0 1.7 -0.7  0 0 0 1.7 -0.7  0 0 0 0 1" />
+      <feComponentTransfer>
+        <!-- edge → center: cream, butter, cream, mint, SLATE, cream, butter, sage, cream, mint, SLATE, butter, cream, mint, butter, cream -->
+        <feFuncR type="table" tableValues="0.965 0.949 0.965 0.812 0.184 0.965 0.949 0.561 0.965 0.812 0.184 0.949 0.965 0.812 0.949 0.965" />
+        <feFuncG type="table" tableValues="0.933 0.851 0.933 0.890 0.294 0.933 0.851 0.702 0.933 0.890 0.294 0.851 0.933 0.890 0.851 0.933" />
+        <feFuncB type="table" tableValues="0.753 0.541 0.753 0.784 0.302 0.753 0.541 0.659 0.753 0.784 0.302 0.541 0.753 0.784 0.541 0.753" />
+      </feComponentTransfer>
+      <feComposite in2="shape" operator="in" result="contour" />
+      <!-- Frost: white grain + light inner rim, kept inside the letters -->
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" />
+      <feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0.4 0 0 0 -0.2" />
+      <feComposite in2="shape" operator="in" result="grain" />
+      <feMorphology in="shape" operator="erode" radius="2" result="inner" />
+      <feComposite in="shape" in2="inner" operator="out" />
+      <feColorMatrix values="0 0 0 0 0.239  0 0 0 0 0.42  0 0 0 0 0.4  0 0 0 0.9 0" />
+      <!-- Soften the rim; clipping to the shape keeps the blur inside the letters -->
+      <feGaussianBlur stdDeviation="0" />
+      <feComposite in2="shape" operator="in" result="rim" />
+      <feMerge>
+        <feMergeNode in="contour" />
+        <feMergeNode in="grain" />
+        <feMergeNode in="rim" />
+      </feMerge>
+      <!-- Fades the frost in/out with the hover (slope set by script.js) -->
+      <feComponentTransfer result="frost">
+        <feFuncA class="goo-fade" type="linear" slope="0" />
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode in="shape" />
+        <feMergeNode in="frost" />
+      </feMerge>
+    </filter>
+  </svg>
+
+  <div class="grid-overlay" aria-hidden="true">
+    <div class="grid-overlay__rows"></div>
+    <div class="grid-overlay__cols grid">
+      <span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
+    </div>
+  </div>
+
+  <header class="site-header grid">
+    <a href="#top" class="logo">Carl Liu</a>
+    <p class="header-role">Designer &amp; Developer</p>
+    <nav class="nav">
+      <a href="#about">About</a>
+      <a href="#work">Work</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <button class="grid-toggle" type="button">Press <kbd>G</kbd> to toggle grid</button>
+  </header>
+
+  <main id="top">
+    <section class="hero grid">
+      <p class="label hero-label">Portfolio<br><span id="year-range"></span></p>
+      <div class="hero-title-wrap">
+        <h1 class="hero-title" aria-label="Carl Liu" title="Click to see how this title evolved">Carl<br>Liu</h1>
+      </div>
+      <div class="iteration" aria-live="polite">
+        <p class="label iteration-head">
+          <button class="iteration-btn" data-step="-1" aria-label="Previous iteration">&#9664;&#xFE0E;</button>
+          <span class="iteration-count"></span>
+          <button class="iteration-btn" data-step="1" aria-label="Next iteration">&#9654;&#xFE0E;</button>
+          <span class="iteration-name"></span>
+        </p>
+        <p class="iteration-note"></p>
+      </div>
+      <p class="hero-intro">
+        I want to think harder and make it simpler.
+        I want to draw things I’m proud of.
+        Above all, keep going.
+      </p>
+    </section>
+
+    <section id="about" class="section grid">
+      <p class="label section-label">01 — About</p>
+      <div class="section-body about-text">
+        <p class="lead">
+          Write a concise introduction here: your background,
+          your focus, and what drives your work.
+        </p>
+        <p>
+          Add a second paragraph with more detail — education, experience,
+          tools you use, or the kinds of projects you enjoy.
+        </p>
+      </div>
+    </section>
+
+    <section id="work" class="section grid">
+      <p class="label section-label">02 — Selected Work</p>
+      <ol class="section-body work-list">
+        <li class="work-item">
+          <a href="#" class="work-link">
+            <span class="work-index">01</span>
+            <span class="work-title">Project One</span>
+            <span class="work-meta">Branding</span>
+            <span class="work-year">2026</span>
+          </a>
+        </li>
+        <li class="work-item">
+          <a href="#" class="work-link">
+            <span class="work-index">02</span>
+            <span class="work-title">Project Two</span>
+            <span class="work-meta">Web Design</span>
+            <span class="work-year">2025</span>
+          </a>
+        </li>
+        <li class="work-item">
+          <a href="#" class="work-link">
+            <span class="work-index">03</span>
+            <span class="work-title">Project Three</span>
+            <span class="work-meta">Editorial</span>
+            <span class="work-year">2025</span>
+          </a>
+        </li>
+        <li class="work-item">
+          <a href="#" class="work-link">
+            <span class="work-index">04</span>
+            <span class="work-title">Project Four</span>
+            <span class="work-meta">Poster</span>
+            <span class="work-year">2024</span>
+          </a>
+        </li>
+      </ol>
+    </section>
+
+    <section id="contact" class="section grid">
+      <p class="label section-label">03 — Contact</p>
+      <div class="section-body">
+        <ul class="contact-emails">
+          <li>
+            <span class="label">School</span>
+            <a href="mailto:cliu17@risd.edu" class="contact-email">cliu17@risd.edu</a>
+          </li>
+          <li>
+            <span class="label">Personal</span>
+            <a href="mailto:liuyuyang27@gmail.com" class="contact-email">liuyuyang27@gmail.com</a>
+          </li>
+        </ul>
+        <ul class="contact-links">
+          <li><a href="#">Instagram</a></li>
+          <li><a href="#">LinkedIn</a></li>
+          <li><a href="#">GitHub</a></li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer grid">
+    <p class="footer-copy">&copy; <span id="year"></span> Carl Liu</p>
+    <ul class="palette" aria-label="Colors used on this site">
+      <li><span class="swatch" style="--c: #111111"></span>#111111</li>
+      <li><span class="swatch" style="--c: #6B6B6B"></span>#6B6B6B</li>
+      <li><span class="swatch" style="--c: #FFFFFF"></span>#FFFFFF</li>
+      <li><span class="swatch" style="--c: #E30613"></span>#E30613</li>
+      <li><span class="swatch" style="--c: #0650E5"></span>#0650E5</li>
+      <li><span class="swatch" style="--c: #F6EEC0"></span>#F6EEC0</li>
+      <li><span class="swatch" style="--c: #CFE3C8"></span>#CFE3C8</li>
+      <li><span class="swatch" style="--c: #2F4B4D"></span>#2F4B4D</li>
+    </ul>
+  </footer>
+</body>
+</html>
