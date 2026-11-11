@@ -503,6 +503,7 @@ main > .section:first-child {
 
 .plate > img,
 .plate > video,
+.plate-pair,
 .plate-phones {
   grid-column: 1 / -1;
 }
@@ -512,6 +513,20 @@ main > .section:first-child {
   display: block;
   width: 100%;
   height: auto;
+}
+
+/* Small caption above a group of images */
+.plate-label {
+  grid-column: 1 / -1;
+  margin-bottom: var(--row);
+  color: var(--color-muted);
+}
+
+/* Two portrait images side by side */
+.plate-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--gutter);
 }
 
 .plate-phones {
