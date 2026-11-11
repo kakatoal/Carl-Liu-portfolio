@@ -513,6 +513,9 @@ main > .section:first-child {
   display: block;
   width: 100%;
   height: auto;
+  /* Safari: don't let grid stretching or the image's pixel size distort it */
+  min-width: 0;
+  align-self: start;
 }
 
 /* Small caption above a group of images */
@@ -539,6 +542,8 @@ main > .section:first-child {
 .book {
   grid-column: 1 / -1;
   justify-self: center;
+  width: 100%; /* fallback for browsers without svh */
+  width: min(100%, calc((100vh - var(--row) * 8) * 4 / 3));
   width: min(100%, calc((100svh - var(--row) * 8) * 4 / 3));
   aspect-ratio: 4 / 3;
   perspective: 2800px;
