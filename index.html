@@ -6,9 +6,10 @@
   <title>Carl Liu — Portfolio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=ZCOOL+QingKe+HuangYou&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <script src="script.js" defer></script>
+  <script src="hero.js" defer></script>
 </head>
 <body>
   <svg class="svg-defs" width="0" height="0" aria-hidden="true">
@@ -24,7 +25,6 @@
     <filter id="goo-glass" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
       <feGaussianBlur class="goo-blur" in="SourceGraphic" stdDeviation="0" />
       <feColorMatrix mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 24 -10" result="blobs" />
-      <!-- Keep the letters' own colors crisp; only the bridges between them stay blurred -->
       <feComposite in="SourceGraphic" in2="blobs" operator="atop" result="shape" />
       <feGaussianBlur id="glass-bump" in="shape" stdDeviation="6" result="bump" />
       <feSpecularLighting in="bump" surfaceScale="5" specularConstant="1" specularExponent="25" lighting-color="#fff" result="light">
@@ -52,7 +52,6 @@
     <filter id="goo-frost" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
       <feGaussianBlur class="goo-blur" in="SourceGraphic" stdDeviation="0" />
       <feColorMatrix mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 24 -10" result="blobs" />
-      <!-- Keep the letters' own colors crisp; only the bridges between them stay blurred -->
       <feComposite in="SourceGraphic" in2="blobs" operator="atop" result="shape" />
       <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" />
       <feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0.4 0 0 0 -0.2" />
@@ -77,7 +76,6 @@
     <filter id="goo-contour" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
       <feGaussianBlur class="goo-blur" in="SourceGraphic" stdDeviation="0" />
       <feColorMatrix mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 24 -10" result="blobs" />
-      <!-- Keep the letters' own colors crisp; only the bridges between them stay blurred -->
       <feComposite in="SourceGraphic" in2="blobs" operator="atop" result="shape" />
       <!-- Contour glass: blur the shape into a height field, warp it, map heights to color bands -->
       <feGaussianBlur id="contour-blur" in="shape" stdDeviation="14" result="height" />
@@ -93,7 +91,7 @@
         <feFuncB type="table" tableValues="0.753 0.541 0.753 0.784 0.302 0.753 0.541 0.659 0.753 0.784 0.302 0.541 0.753 0.784 0.541 0.753" />
       </feComponentTransfer>
       <feComposite in2="shape" operator="in" result="contour" />
-      <!-- Frost: white grain + light inner rim, kept inside the letters -->
+      <!-- Frost: white grain + rim, kept inside the letters -->
       <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" />
       <feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0.4 0 0 0 -0.2" />
       <feComposite in2="shape" operator="in" result="grain" />
@@ -108,7 +106,7 @@
         <feMergeNode in="grain" />
         <feMergeNode in="rim" />
       </feMerge>
-      <!-- Fades the frost in/out with the hover (slope set by script.js) -->
+      <!-- Fades the effects in/out with the hover (slope set by hero.js) -->
       <feComponentTransfer result="frost">
         <feFuncA class="goo-fade" type="linear" slope="0" />
       </feComponentTransfer>
@@ -129,19 +127,14 @@
   </div>
 
   <header class="site-header grid">
-    <a href="#top" class="logo">Carl Liu</a>
-    <p class="header-role">Designer &amp; Developer</p>
-    <nav class="nav">
-      <a href="#about">About</a>
-      <a href="#work">Work</a>
-      <a href="#contact">Contact</a>
-    </nav>
-    <button class="grid-toggle" type="button">Press <kbd>G</kbd> to toggle grid</button>
-  </header>
-
-  <main id="top">
-    <section class="hero grid">
-      <p class="label hero-label">Portfolio<br><span id="year-range"></span></p>
+    <div class="header-index">
+      <nav class="nav">
+        <a href="#work">Work</a>
+        <a href="#contact">Contact</a>
+        <a href="https://kakatoal.github.io/Carl-Liu-s-illustration-portfolio/" target="_blank" rel="noopener">Illustration ↗</a>
+      </nav>
+    </div>
+    <div class="masthead">
       <div class="hero-title-wrap">
         <h1 class="hero-title" aria-label="Carl Liu" title="Click to see how this title evolved">Carl<br>Liu</h1>
       </div>
@@ -154,67 +147,62 @@
         </p>
         <p class="iteration-note"></p>
       </div>
-      <p class="hero-intro">
-        I want to think harder and make it simpler.
-        I want to draw things I’m proud of.
-        Above all, keep going.
-      </p>
-    </section>
+    </div>
+  </header>
 
-    <section id="about" class="section grid">
-      <p class="label section-label">01 — About</p>
-      <div class="section-body about-text">
-        <p class="lead">
-          Write a concise introduction here: your background,
-          your focus, and what drives your work.
-        </p>
-        <p>
-          Add a second paragraph with more detail — education, experience,
-          tools you use, or the kinds of projects you enjoy.
-        </p>
-      </div>
-    </section>
-
+  <main id="top">
     <section id="work" class="section grid">
-      <p class="label section-label">02 — Selected Work</p>
+      <p class="label section-label">01 — Selected Work</p>
       <ol class="section-body work-list">
         <li class="work-item">
-          <a href="#" class="work-link">
-            <span class="work-index">01</span>
-            <span class="work-title">Project One</span>
-            <span class="work-meta">Branding</span>
-            <span class="work-year">2026</span>
+          <a href="projects/aiia.html" class="work-link">
+            <img class="work-cover" src="projects/aiia/cover.png" alt="AIia cover: the pixel mark beside the pixel wordmark">
+            <span class="work-row">
+              <span class="work-index">01</span>
+              <span class="work-title">AIia</span>
+              <span class="work-meta">Brand Identity</span>
+              <span class="work-year">2026</span>
+            </span>
           </a>
         </li>
         <li class="work-item">
-          <a href="#" class="work-link">
-            <span class="work-index">02</span>
-            <span class="work-title">Project Two</span>
-            <span class="work-meta">Web Design</span>
-            <span class="work-year">2025</span>
+          <a href="projects/glass-design.html" class="work-link">
+            <img class="work-cover" src="projects/glass-design/cover.jpg" alt="Glass Design cover: SOLID crisp, VOID dissolving behind fluted glass" loading="lazy">
+            <span class="work-row">
+              <span class="work-index">02</span>
+              <span class="work-title">Glass Design</span>
+              <span class="work-meta">Typeface &amp; Posters</span>
+              <span class="work-year">2026</span>
+            </span>
           </a>
         </li>
         <li class="work-item">
-          <a href="#" class="work-link">
-            <span class="work-index">03</span>
-            <span class="work-title">Project Three</span>
-            <span class="work-meta">Editorial</span>
-            <span class="work-year">2025</span>
+          <a href="projects/take-it-to-go.html" class="work-link">
+            <img class="work-cover" src="projects/take-it-to-go/tags.jpg" alt="Take It To Go: package tags clipped to paper-cut food" loading="lazy">
+            <span class="work-row">
+              <span class="work-index">03</span>
+              <span class="work-title">Take It To Go</span>
+              <span class="work-meta">Print / Campaign</span>
+              <span class="work-year">2025</span>
+            </span>
           </a>
         </li>
         <li class="work-item">
-          <a href="#" class="work-link">
-            <span class="work-index">04</span>
-            <span class="work-title">Project Four</span>
-            <span class="work-meta">Poster</span>
-            <span class="work-year">2024</span>
+          <a href="projects/visual-symbol-book.html" class="work-link">
+            <img class="work-cover" src="projects/visual-symbol-book/page-00.jpg" alt="A Visual Symbol Book cover: a triangle inside a circle inside a square" loading="lazy">
+            <span class="work-row">
+              <span class="work-index">04</span>
+              <span class="work-title">Visual Symbol Book</span>
+              <span class="work-meta">Book / Web</span>
+              <span class="work-year">2026</span>
+            </span>
           </a>
         </li>
       </ol>
     </section>
 
     <section id="contact" class="section grid">
-      <p class="label section-label">03 — Contact</p>
+      <p class="label section-label">02 — Contact</p>
       <div class="section-body">
         <ul class="contact-emails">
           <li>
@@ -225,11 +213,10 @@
             <span class="label">Personal</span>
             <a href="mailto:liuyuyang27@gmail.com" class="contact-email">liuyuyang27@gmail.com</a>
           </li>
-        </ul>
-        <ul class="contact-links">
-          <li><a href="#">Instagram</a></li>
-          <li><a href="#">LinkedIn</a></li>
-          <li><a href="#">GitHub</a></li>
+          <li>
+            <span class="label">Illustration</span>
+            <a href="https://kakatoal.github.io/Carl-Liu-s-illustration-portfolio/" class="contact-email" target="_blank" rel="noopener">Illustration Portfolio ↗</a>
+          </li>
         </ul>
       </div>
     </section>
@@ -240,8 +227,8 @@
     <ul class="palette" aria-label="Colors used on this site">
       <li><span class="swatch" style="--c: #111111"></span>#111111</li>
       <li><span class="swatch" style="--c: #6B6B6B"></span>#6B6B6B</li>
-      <li><span class="swatch" style="--c: #FFFFFF"></span>#FFFFFF</li>
-      <li><span class="swatch" style="--c: #E30613"></span>#E30613</li>
+      <li><span class="swatch" style="--c: #F3F3F3"></span>#F3F3F3</li>
+      <li><span class="swatch" style="--c: #00A651"></span>#00A651</li>
       <li><span class="swatch" style="--c: #0650E5"></span>#0650E5</li>
       <li><span class="swatch" style="--c: #F6EEC0"></span>#F6EEC0</li>
       <li><span class="swatch" style="--c: #CFE3C8"></span>#CFE3C8</li>
